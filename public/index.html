@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiParse|Your Fastest Data Parsing Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            /* Soft Mesh Gradient Background */
+            background: radial-gradient(at 0% 0%, hsla(225,39%,30%,1) 0, transparent 50%),
+                        radial-gradient(at 50% 0%, hsla(225,39%,95%,1) 0, transparent 50%),
+                        radial-gradient(at 100% 0%, hsla(225,39%,90%,1) 0, transparent 50%);
+            background-color: #f8fafc;
+        }
+
+        .luxury-container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 40px 50px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .brand span {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 0 rgba(99, 102, 241, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .content-body {
+            padding: 50px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"], input[type="file"] {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+        }
+
+        input:focus {
+            outline: none;
+            background: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 10px 20px -5px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-luxury {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 0 40px;
+            height: 50px;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            align-self: flex-end;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-luxury:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            background: var(--accent);
+        }
+
+        .btn-luxury:active { transform: translateY(0); }
+
+        .terminal-container {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+            padding: 30px;
+            height: 250px;
+            overflow-y: auto;
+        }
+
+        #output {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .log-meta { color: var(--accent); font-weight: 600; margin-right: 10px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+
+        /* Custom Scrollbar */
+        .terminal-container::-webkit-scrollbar { width: 4px; }
+        .terminal-container::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="luxury-container">
+        <div class="glass-panel">
+            <header class="panel-header">
+                <div class="brand">
+                    <h1>Opti<span>Parse</span></h1>
+                </div>
+                <div class="status-badge">
+                    <div class="pulse-dot"></div>
+                    Your Fastest Data Parsing Tool
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Source Dataset</label>
+                        <input type="file" id="fileInput">
+                    </div>
+                    <div class="input-group">
+                        <label>Search Pattern</label>
+                        <input type="text" id="targetWord" placeholder="Define query...">
+                    </div>
+                    <button class="btn-luxury" id="runBtn" onclick="executeEngine()">Analyze</button>
+                </div>
+
+                <div class="terminal-container">
+                    <pre id="output">System idling. Awaiting high-priority data stream...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+<script>
+    const socket = io(); // Initialize WebSocket connection
+
+    // Real-time listener for C++ updates
+    socket.on('terminal-stream', (data) => {
+        const output = document.getElementById('output');
+        const cleanText = data.replace(/\x1B\[\d+;?\d*m/g, ''); // Strip C++ color codes
+        output.innerHTML += cleanText;
+        output.scrollTop = output.scrollHeight; // Auto-scroll to bottom
+    });
+
+    // Real-time listener for the AI Agent
+    socket.on('ai-report', (data) => {
+        const output = document.getElementById('output');
+        const btn = document.getElementById('runBtn');
+        output.innerHTML += `<span style="color: #6366f1; font-weight: bold;">${data}</span>`;
+        output.scrollTop = output.scrollHeight;
+        
+        btn.disabled = false;
+        btn.innerText = "Analyze";
+    });
+ 
+    // Real-time listener for the AI Agent
+    socket.on('ai-report', (data) => {
+        const output = document.getElementById('output');
+        const btn = document.getElementById('runBtn');
+        output.innerHTML += `<span style="color: #6366f1; font-weight: bold;">${data}</span>`;
+        output.scrollTop = output.scrollHeight;
+        
+        btn.disabled = false;
+        btn.innerText = "Analyze";
+
+        // NEW: Wire up the download button dynamically
+        const downloadBtn = document.querySelector('.download-btn');
+        downloadBtn.onclick = () => {
+            // This tells the browser to navigate to the download API, triggering the save prompt
+            window.location.href = '/api/download'; 
+        };
+    });
+    
+    async function executeEngine() {
+        const fileInput = document.getElementById('fileInput');
+        const targetWord = document.getElementById('targetWord').value;
+        const btn = document.getElementById('runBtn');
+        const output = document.getElementById('output');
+
+        if (fileInput.files.length === 0 || !targetWord) {
+            alert("Please initialize configuration.");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Uploading Data...";
+        output.innerHTML = `<span class="log-meta">[01]</span> Establishing secure WebSocket...\n` +
+                           `<span class="log-meta">[02]</span> Transferring dataset to server cache...\n`;
+
+        // Step 1: Upload the file via standard HTTP
+        const formData = new FormData();
+        formData.append('dataFile', fileInput.files[0]);
+
+        try {
+            const response = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            
+            output.innerHTML += `<span class="log-meta">[03]</span> Upload complete. Triggering C++ Engine via WebSockets...\n\n`;
+            
+            // Step 2: Trigger the live execution pipeline via WebSocket
+            socket.emit('start-engine', { 
+                filePath: result.filePath, 
+                targetWord: targetWord 
+            });
+
+        } catch (error) {
+            output.innerHTML += `<span style="color: #ef4444" class="log-meta">[ERROR]</span> Pipeline Failure: ${error}`;
+            btn.disabled = false;
+            btn.innerText = "Analyze";
+        } finally {
+            fileInput.value = ""; 
+        }
+    }
+</script>
+</body>
+</html>
